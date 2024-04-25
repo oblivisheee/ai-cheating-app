@@ -21,10 +21,10 @@ pub fn get_completion(client: Client, prompt: &str) -> String {
     }
 
     let req = ChatCompletionRequest::new(
-        String::from(model), // Now model is accessible here
+        String::from(model),
         vec![chat_completion::ChatCompletionMessage {
             role: chat_completion::MessageRole::user,
-            content: chat_completion::Content::Text(String::from(prompt)),
+            content: chat_completion::Content::Te xt(String::from(prompt)),
             name: None,
         }],
     );
