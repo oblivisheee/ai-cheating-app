@@ -1,36 +1,41 @@
 use openai_api_rs::v1::api::Client;
 use openai_api_rs::v1::chat_completion::{self, ChatCompletionRequest};
-use rand::Rng;
 
 const GPT: &str = "gpt-3.5-turbo";
-const GEMINI: &str = "gemini-pro";
 const MISTRAL: &str = "mistral-large-2402";
 
-pub fn get_completion(client: Client, prompt: &str) -> String {
-    let mut rng = rand::thread_rng();
-
-    let random_number = rng.gen_range(1..=3);
-    let model;
-
-    if random_number == 1 {
-        model = GPT;
-    } else if random_number == 2 {
-        model = GEMINI;
-    } else {
-        model = MISTRAL;
+const ANSWER_ERROR: &str = "It seems like model unavailable.";
+pub fn get_completion(client: Client, prompt: String, model: String) -> String {
+    let mut model_choice: &str = "";
+    if model == "GPT".to_string() {
+        model_choice = GPT;
+    } else if model == "MISTRAL".to_string() {
+        model_choice = MISTRAL;
     }
 
     let req = ChatCompletionRequest::new(
-        String::from(model),
+        String::from(model_choice),
         vec![chat_completion::ChatCompletionMessage {
             role: chat_completion::MessageRole::user,
-            content: chat_completion::Content::Te xt(String::from(prompt)),
+            content: chat_completion::Content::Text(prompt),
             name: None,
         }],
     );
 
-    let result = client.chat_completion(req).unwrap();
-    result.choices[0].message.content.as_ref().unwrap().clone()
+    match client.chat_completion(req) {
+        Ok(result) => {
+            if let Some(content) = result
+                .choices
+                .get(0)
+                .and_then(|choice| choice.message.content.as_ref())
+            {
+                content.clone()
+            } else {
+                "No completion response found".to_string()
+            }
+        }
+        Err(_) => ANSWER_ERROR.to_string(),
+    }
 }
 
 pub fn client(api: &str) -> Client {
