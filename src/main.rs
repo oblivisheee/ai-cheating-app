@@ -1,7 +1,7 @@
 mod api;
 use eframe::egui;
 
-const API_KEY: &str = "6OXIyUHWb9ouesIAu7TX_8uNKCTEZ37yromakTvXops";
+const API_KEY: &str = "YOUR_API_NAGA_KEY";
 
 #[derive(Default)]
 pub struct Calculator {
