@@ -9,7 +9,7 @@ cargo build --release
 cargo install cargo-bundle
 cargo-bundle --release
 ```
-Windows:
+Windows (currently not working, will be fixed later):
 ```
 cargo build --release
 ```
